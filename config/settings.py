@@ -21,6 +21,7 @@ INSTALLED_APPS = [
     "corsheaders",
     "rest_framework",
     "rest_framework_simplejwt",
+    "drf_spectacular",
     "django_filters",
     "accounts",
     "catalog",
@@ -42,7 +43,7 @@ ROOT_URLCONF = "config.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
+        "DIRS": [BASE_DIR / "templates"],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -90,6 +91,9 @@ USE_TZ = True
 STATIC_URL = "static/"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
+LOGIN_URL = "/shop/login/"
+LOGIN_REDIRECT_URL = "/shop/"
+
 CORS_ALLOWED_ORIGINS = config(
     "CORS_ORIGINS",
     default="http://localhost:3000,http://localhost:8000",
@@ -98,6 +102,7 @@ CORS_ALLOWED_ORIGINS = config(
 CORS_ALLOW_CREDENTIALS = True
 
 REST_FRAMEWORK = {
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
     "DEFAULT_AUTHENTICATION_CLASSES": [
         "rest_framework_simplejwt.authentication.JWTAuthentication",
     ],
@@ -109,6 +114,18 @@ REST_FRAMEWORK = {
         "writes": "60/minute",
     },
     "EXCEPTION_HANDLER": "config.exceptions.custom_exception_handler",
+}
+
+SPECTACULAR_SETTINGS = {
+    "TITLE": "django-101 API",
+    "DESCRIPTION": (
+        "Items and categories API — Django/DRF port of fastAPI-101. "
+        "Register and login here to get a JWT, then Authorize for write endpoints."
+    ),
+    "VERSION": "1.0.0",
+    "SERVE_INCLUDE_SCHEMA": False,
+    "COMPONENT_SPLIT_REQUEST": True,
+    "SCHEMA_PATH_PREFIX": r"/",
 }
 
 SIMPLE_JWT = {

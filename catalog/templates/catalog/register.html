@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block title %}Create account{% endblock %}
+
+{% block content %}
+<section class="panel narrow">
+  <h1>Create account</h1>
+  <p class="muted">
+    Sign up here for the shop. The JSON API still has its own
+    <code>POST /auth/register</code> endpoint for mobile apps and curl.
+  </p>
+
+  <form method="post" novalidate>
+    {% csrf_token %}
+    {{ form.as_p }}
+    <div class="actions">
+      <button type="submit" class="button">Create account</button>
+    </div>
+  </form>
+
+  <p class="muted">
+    Already have an account?
+    <a href="{% url 'shop-login' %}">Log in</a>
+  </p>
+</section>
+{% endblock %}

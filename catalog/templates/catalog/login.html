@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block title %}Log in{% endblock %}
+
+{% block content %}
+<section class="panel narrow">
+  <h1>Log in</h1>
+  <p class="muted">
+    Browser session auth — different from <code>POST /auth/login</code>, which returns a JWT for the API.
+  </p>
+
+  <form method="post" novalidate>
+    {% csrf_token %}
+    {{ form.as_p }}
+    <div class="actions">
+      <button type="submit" class="button">Log in</button>
+    </div>
+  </form>
+
+  <p class="muted">
+    No account?
+    <a href="{% url 'shop-register' %}">Create account</a>
+  </p>
+</section>
+{% endblock %}

@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block title %}{{ item.name }}{% endblock %}
+
+{% block content %}
+<article class="panel">
+  <p class="eyebrow"><a href="{% url 'shop-item-list' %}">← Back to items</a></p>
+  <h1>{{ item.name }}</h1>
+  <dl class="detail-list">
+    <div><dt>Price</dt><dd>${{ item.price }}</dd></div>
+    <div><dt>Category</dt><dd>{{ item.category.name|default:"Uncategorized" }}</dd></div>
+    <div><dt>Description</dt><dd>{{ item.description|default:"No description." }}</dd></div>
+  </dl>
+  <p class="muted">Same record as <a href="/items/{{ item.pk }}">GET /items/{{ item.pk }}</a> (JSON).</p>
+</article>
+{% endblock %}

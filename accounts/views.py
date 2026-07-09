@@ -1,6 +1,7 @@
 """Account serializers and auth views."""
 
 from django.contrib.auth import authenticate, get_user_model
+from drf_spectacular.utils import OpenApiResponse, extend_schema
 from rest_framework import serializers, status
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
@@ -24,6 +25,20 @@ class UserResponseSerializer(serializers.ModelSerializer):
         fields = ["id", "email"]
 
 
+class LoginRequestSerializer(serializers.Serializer):
+    username = serializers.EmailField(help_text="Email address (FastAPI parity field name)")
+    password = serializers.CharField(write_only=True)
+
+
+class LoginResponseSerializer(serializers.Serializer):
+    access_token = serializers.CharField()
+    token_type = serializers.CharField()
+
+
+@extend_schema(
+    request=UserCreateSerializer,
+    responses={201: UserResponseSerializer, 409: OpenApiResponse(description="Email already exists")},
+)
 class RegisterView(APIView):
     permission_classes = [AllowAny]
     throttle_classes = [AuthRateThrottle]
@@ -41,6 +56,13 @@ class RegisterView(APIView):
         return Response(UserResponseSerializer(user).data, status=status.HTTP_201_CREATED)
 
 
+@extend_schema(
+    request=LoginRequestSerializer,
+    responses={
+        200: LoginResponseSerializer,
+        401: OpenApiResponse(description="Incorrect email or password"),
+    },
+)
 class LoginView(APIView):
     """Exchange email + password for a JWT (username field holds email, like FastAPI)."""
 
@@ -62,6 +84,7 @@ class LoginView(APIView):
         return Response({"access_token": access_token, "token_type": "bearer"})
 
 
+@extend_schema(responses={200: UserResponseSerializer})
 class MeView(APIView):
     permission_classes = [IsAuthenticated]
 

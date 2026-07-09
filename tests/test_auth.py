@@ -55,3 +55,10 @@ def test_read_current_user(authed_client):
 def test_read_current_user_without_token(client):
     response = client.get("/auth/me")
     assert response.status_code == 401
+
+
+def test_create_superuser_manager(db):
+    user = User.objects.create_superuser("admin@example.com", "password123")
+    assert user.is_staff is True
+    assert user.is_superuser is True
+    assert user.check_password("password123")

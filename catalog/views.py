@@ -27,6 +27,13 @@ class CategoryViewSet(viewsets.ViewSet):
 
     pagination_class = SkipLimitPagination
 
+    def get_serializer_class(self):
+        if self.action == "create":
+            return CategoryCreateSerializer
+        if self.action in {"partial_update", "update"}:
+            return CategoryUpdateSerializer
+        return CategorySerializer
+
     def get_permissions(self):
         if self.action in {"create", "update", "partial_update", "destroy"}:
             return [IsAuthenticated()]
@@ -77,6 +84,15 @@ class ItemViewSet(viewsets.ViewSet):
     """Item CRUD + stats (FastAPI-101 /items equivalent)."""
 
     pagination_class = SkipLimitPagination
+
+    def get_serializer_class(self):
+        if self.action == "create":
+            return ItemCreateSerializer
+        if self.action in {"partial_update", "update"}:
+            return ItemUpdateSerializer
+        if self.action == "stats_summary":
+            return ItemStatsSerializer
+        return ItemSerializer
 
     def get_permissions(self):
         if self.action in {"create", "update", "partial_update", "destroy"}:

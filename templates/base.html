@@ -1,0 +1,55 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Catalog Shop{% endblock %} · django-101</title>
+  <link rel="stylesheet" href="{% static 'catalog/style.css' %}">
+</head>
+<body>
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="brand" href="{% url 'shop-home' %}">Catalog Shop</a>
+      <nav class="nav">
+        <a href="{% url 'shop-home' %}">Home</a>
+        <a href="{% url 'shop-item-list' %}">Items</a>
+        <a href="/items">API</a>
+        <a href="/docs">API docs</a>
+        <a href="/admin/">Admin</a>
+      </nav>
+      <div class="auth">
+        {% if user.is_authenticated %}
+          <span class="muted">{{ user.email }}</span>
+          <form method="post" action="{% url 'shop-logout' %}">
+            {% csrf_token %}
+            <button type="submit" class="link-button">Log out</button>
+          </form>
+        {% else %}
+          <a href="{% url 'shop-login' %}">Log in</a>
+        {% endif %}
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    {% if messages %}
+      <ul class="messages">
+        {% for message in messages %}
+          <li class="message {{ message.tags }}">{{ message }}</li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p class="muted">
+        Server-rendered Django templates — same models and services as the JSON API.
+      </p>
+    </div>
+  </footer>
+</body>
+</html>

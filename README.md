@@ -2,7 +2,7 @@
 
 A step-by-step **Django + DRF** port of [fastAPI-101](https://github.com/iammikek/fastAPI-101) — same items/categories API, same Laravel crossover style, different framework.
 
-**Monolith:** Django owns models, database, admin, and JSON API (not a frontend calling FastAPI).
+**Monolith:** Django owns models, database, admin, JSON API, and a **server-rendered shop** at `/shop/` (not a frontend calling FastAPI or its own JSON API).
 
 ---
 
@@ -19,8 +19,10 @@ A step-by-step **Django + DRF** port of [fastAPI-101](https://github.com/iammike
 9. **JWT auth** — Bearer tokens on write endpoints (register/login/me)
 10. **Rate limiting** — 10/min auth, 60/min writes (DRF throttling)
 11. **PostgreSQL in Docker** — port **8001** (so fastAPI-101 can keep **8000**)
-12. **Tests** — pytest-django (25 tests)
-13. **CI** — GitHub Actions (ruff + pytest)
+12. **Catalog Shop** — server-rendered HTML at `/shop/` (templates, forms, session auth) — see **[docs/frontend.md](docs/frontend.md)**
+13. **OpenAPI docs** — Swagger UI at `/docs` (drf-spectacular) — see **[docs/api-docs.md](docs/api-docs.md)**
+14. **Tests** — pytest-django (37 tests)
+15. **CI** — GitHub Actions (ruff + pytest)
 
 ---
 
@@ -43,7 +45,9 @@ A step-by-step **Django + DRF** port of [fastAPI-101](https://github.com/iammike
 15. [Step 12: Rate limiting](#15-step-12-rate-limiting)
 16. [Step 13: PostgreSQL (Docker)](#16-step-13-postgresql-docker)
 17. [Step 14: Service layer tests](#17-step-14-service-layer-tests)
-18. [Quick Reference](#18-quick-reference)
+18. [Step 15: Server-rendered frontend](#18-step-15-server-rendered-frontend)
+19. [Step 16: OpenAPI docs (Swagger UI)](#19-step-16-openapi-docs-swagger-ui)
+20. [Quick Reference](#20-quick-reference)
 
 ---
 
@@ -62,7 +66,9 @@ python manage.py runserver 8001
 ```
 
 Open **http://127.0.0.1:8001/** — root message  
-**http://127.0.0.1:8001/items** — item list (empty)
+**http://127.0.0.1:8001/items** — item list JSON (empty)  
+**http://127.0.0.1:8001/docs** — interactive API docs (Swagger UI)  
+**http://127.0.0.1:8001/shop/** — browser UI (register, browse, add items)
 
 ### Docker (PostgreSQL)
 
@@ -97,11 +103,21 @@ django-101/
 ├── catalog/                # Items + categories
 │   ├── models.py
 │   ├── serializers.py
-│   ├── services.py         # Business logic
-│   ├── views.py            # DRF ViewSets
+│   ├── services.py         # Business logic (shared by API + shop)
+│   ├── views.py            # DRF ViewSets (JSON API)
+│   ├── web_views.py        # Template views (/shop/)
+│   ├── forms.py            # HTML forms
+│   ├── urls_web.py         # /shop/ routes
+│   ├── templates/catalog/  # Shop pages
+│   ├── static/catalog/     # Shop CSS
 │   ├── admin.py
 │   ├── exceptions.py
 │   └── throttles.py
+├── templates/
+│   └── base.html           # Shop layout
+├── docs/
+│   ├── frontend.md         # How the browser UI was built
+│   └── api-docs.md         # Swagger UI at /docs
 ├── tests/
 ├── requirements.txt
 ├── docker-compose.yml
@@ -123,7 +139,7 @@ django-101/
 | `python-jose` JWT | `rest_framework_simplejwt` |
 | `slowapi` | DRF `throttle_classes` |
 | pytest + TestClient | pytest-django + `APIClient` |
-| `/docs` (Swagger) | Django Admin + browsable API (optional) |
+| `/docs` (Swagger) | `/docs` (drf-spectacular) |
 | — | **Django Admin** `/admin` |
 
 | Laravel | django-101 |
@@ -226,7 +242,7 @@ router.register("items", ItemViewSet, basename="item")
 pytest tests/ -v
 ```
 
-**25 tests** covering auth, items, categories, services, health.
+**34 tests** covering auth, items, categories, services, health, and shop pages.
 
 ---
 
@@ -364,13 +380,62 @@ Local `runserver` still uses SQLite (`db.sqlite3`).
 
 ---
 
-## 18. Quick Reference
+## 18. Step 15: Server-rendered frontend
+
+A **Catalog Shop** at `/shop/` demonstrates full-stack Django alongside the JSON API:
+
+| Shop (browser) | API (JSON) |
+|----------------|------------|
+| `/shop/register/` — signup + auto-login | `POST /auth/register` — JSON only |
+| `/shop/login/` — session cookie | `POST /auth/login` — JWT |
+| `/shop/items/` — HTML table + filters | `GET /items` — JSON list |
+| `/shop/items/new/` — HTML form | `POST /items` — Bearer token |
+
+The shop calls **`catalog/services.py` directly** — it does not fetch `/items`. Same monolith pattern as Laravel web routes using Eloquent, not internal HTTP.
+
+**Full walkthrough:** **[docs/frontend.md](docs/frontend.md)** — architecture, file layout, auth split, request flow, tests, and why we did not wire the UI to the API.
+
+```bash
+python manage.py runserver 8001
+# http://127.0.0.1:8001/shop/register/
+```
+
+---
+
+## 19. Step 16: OpenAPI docs (Swagger UI)
+
+Interactive API browser — same idea as fastAPI-101’s **http://localhost:8000/docs**.
+
+**Library:** `drf-spectacular`
+
+| URL | Purpose |
+|-----|---------|
+| `/docs` | Swagger UI — try all endpoints |
+| `/openapi.json` | Raw OpenAPI 3 schema |
+
+**Try it:**
+
+1. Open **http://127.0.0.1:8001/docs**
+2. **POST /auth/register** → create a user
+3. **POST /auth/login** → copy `access_token`
+4. Click **Authorize** → `Bearer <token>`
+5. Try **POST /items** or **POST /categories**
+
+**Full walkthrough:** **[docs/api-docs.md](docs/api-docs.md)** — wiring, JWT flow, comparison with browsable API and fastAPI-101.
+
+---
+
+## 20. Quick Reference
 
 | Goal | Command |
 |------|---------|
 | Activate venv | `source .venv/bin/activate` |
 | Migrate | `python manage.py migrate` |
 | Run local (SQLite) | `python manage.py runserver 8001` |
+| Open shop UI | http://127.0.0.1:8001/shop/ |
+| Open API docs | http://127.0.0.1:8001/docs |
+| Frontend docs | [docs/frontend.md](docs/frontend.md) |
+| API docs guide | [docs/api-docs.md](docs/api-docs.md) |
 | Create admin user | `python manage.py createsuperuser` |
 | Run tests | `pytest tests/ -v --cov` |
 | Docker + Postgres | `docker compose up --build` |
@@ -389,6 +454,7 @@ Run both side by side:
 | Root message | `Hello from FastAPI!` | `Hello from Django!` |
 | API shape | Same endpoints | Same endpoints |
 | Admin UI | No | `/admin` |
-| OpenAPI docs | `/docs` | Browsable API (optional) |
+| Browser shop | No | `/shop/` |
+| OpenAPI docs | `/docs` | `/docs` |
 
 You now have the **same API** implemented twice — once FastAPI (async-capable, explicit), once Django (monolith, batteries-included). That is the crossover.

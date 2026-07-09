@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block title %}{{ page_title|default:"Add item" }}{% endblock %}
+
+{% block content %}
+<section class="panel narrow">
+  <h1>{{ page_title|default:"Add item" }}</h1>
+  <p class="muted">Session login required. Submits a normal HTML form with CSRF protection.</p>
+
+  <form method="post" novalidate>
+    {% csrf_token %}
+    {{ form.as_p }}
+    <div class="actions">
+      <button type="submit" class="button">Save item</button>
+      <a class="button secondary" href="{% url 'shop-item-list' %}">Cancel</a>
+    </div>
+  </form>
+</section>
+{% endblock %}

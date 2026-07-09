@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+<section class="hero">
+  <p class="eyebrow">Full-stack Django</p>
+  <h1>Catalog Shop</h1>
+  <p class="lead">
+    This page is rendered by Django templates on the server — not JSON from DRF.
+    The same <code>ItemService</code> powers both this UI and <a href="/items">/items</a>.
+  </p>
+  <div class="actions">
+    <a class="button" href="{% url 'shop-item-list' %}">Browse items</a>
+    {% if user.is_authenticated %}
+      <a class="button secondary" href="{% url 'shop-item-create' %}">Add item</a>
+    {% else %}
+      <a class="button secondary" href="{% url 'shop-login' %}">Log in to add items</a>
+    {% endif %}
+  </div>
+</section>
+
+<section class="panel">
+  <h2>Catalog stats</h2>
+  {% if stats.total_items == 0 %}
+    <p>No items yet. Create one via the API or log in and use <a href="{% url 'shop-item-create' %}">Add item</a>.</p>
+  {% else %}
+    <dl class="stats-grid">
+      <div><dt>Total items</dt><dd>{{ stats.total_items }}</dd></div>
+      <div><dt>Average price</dt><dd>${{ stats.average_price }}</dd></div>
+      <div><dt>Price range</dt><dd>${{ stats.min_price }} – ${{ stats.max_price }}</dd></div>
+      <div><dt>Uncategorized</dt><dd>{{ stats.uncategorized_count }}</dd></div>
+    </dl>
+
+    {% if stats.by_category %}
+      <h3>By category</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Category</th>
+            <th>Items</th>
+            <th>Avg price</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for row in stats.by_category %}
+            <tr>
+              <td>{{ row.category_name }}</td>
+              <td>{{ row.item_count }}</td>
+              <td>${{ row.average_price }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    {% endif %}
+  {% endif %}
+</section>
+
+<section class="panel muted-panel">
+  <h2>API vs browser UI</h2>
+  <table class="compare">
+    <thead>
+      <tr>
+        <th></th>
+        <th>JSON API (DRF)</th>
+        <th>Shop (templates)</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Response</td>
+        <td><code>application/json</code></td>
+        <td><code>text/html</code></td>
+      </tr>
+      <tr>
+        <td>Auth</td>
+        <td>JWT Bearer token</td>
+        <td>Session cookie</td>
+      </tr>
+      <tr>
+        <td>Client</td>
+        <td>curl, mobile app, SPA</td>
+        <td>Browser (full page loads)</td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+{% endblock %}
