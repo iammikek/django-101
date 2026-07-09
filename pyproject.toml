@@ -1,0 +1,29 @@
+[tool.pytest.ini_options]
+DJANGO_SETTINGS_MODULE = "config.settings"
+python_files = ["tests.py", "test_*.py"]
+testpaths = ["tests"]
+markers = [
+    "rate_limit: tests that enable rate limiting",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "N", "W", "UP"]
+ignore = ["E501"]
+
+[tool.ruff.lint.per-file-ignores]
+"**/migrations/*.py" = ["E501"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["accounts", "catalog", "config"]
+
+[tool.coverage.run]
+source = ["accounts", "catalog", "config"]
+omit = ["tests/*", ".venv/*", "manage.py"]
+
+[tool.coverage.report]
+fail_under = 80
+show_missing = true
