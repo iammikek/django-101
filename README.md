@@ -477,6 +477,7 @@ You now have the **same API** implemented twice — once FastAPI (async-capable,
 | [express-101](https://github.com/iammikek/express-101) | 8007 | API-only | Express, Vitest |
 | [go-101](https://github.com/iammikek/go-101) | 8000* | API-only | Gin, GORM |
 | [fortran-101](https://github.com/iammikek/fortran-101) | 8008 | API-only | Fortran, fpm |
+| [java-101](https://github.com/iammikek/java-101) | 8009 | API-only | Spring Boot, JPA, Flyway |
 
 \* go-101 also uses port 8000 — run one backend at a time, or change port in config.
 
