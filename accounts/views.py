@@ -37,7 +37,10 @@ class LoginResponseSerializer(serializers.Serializer):
 
 @extend_schema(
     request=UserCreateSerializer,
-    responses={201: UserResponseSerializer, 409: OpenApiResponse(description="Email already exists")},
+    responses={
+        201: UserResponseSerializer,
+        409: OpenApiResponse(description="Email already exists"),
+    },
 )
 class RegisterView(APIView):
     permission_classes = [AllowAny]
