@@ -458,3 +458,38 @@ Run both side by side:
 | OpenAPI docs | `/docs` | `/docs` |
 
 You now have the **same API** implemented twice — once FastAPI (async-capable, explicit), once Django (monolith, batteries-included). That is the crossover.
+
+---
+
+## *-101 Family
+
+### API backends
+
+| Repo | Port | Type | Stack |
+|------|------|------|-------|
+| [fastAPI-101](https://github.com/iammikek/fastAPI-101) | 8000 | API-only | FastAPI, SQLAlchemy |
+| [**django-101**](https://github.com/iammikek/django-101) | **8001** | Monolith | Django + DRF + shop |
+| [symfony-101](https://github.com/iammikek/symfony-101) | 8002 | Monolith | Symfony + shop |
+| [laravel-101](https://github.com/iammikek/laravel-101) | 8003 | Monolith | Laravel + shop |
+| [framework-x-101](https://github.com/iammikek/framework-x-101) | 8004 | Monolith | Framework X + shop |
+| [orchestr-101](https://github.com/iammikek/orchestr-101) | 8005 | Monolith | Orchestr + shop |
+| [nest-101](https://github.com/iammikek/nest-101) | 8006 | API-only | NestJS, TypeScript |
+| [express-101](https://github.com/iammikek/express-101) | 8007 | API-only | Express, Vitest |
+| [go-101](https://github.com/iammikek/go-101) | 8000* | API-only | Gin, GORM |
+
+\* go-101 also uses port 8000 — run one backend at a time, or change port in config.
+
+### Other clients
+
+| Repo | Platform | Stack |
+|------|----------|-------|
+| [flutter-101](https://github.com/iammikek/flutter-101) | Mobile / desktop | Flutter (iOS, macOS, Android) |
+| [react-101](https://github.com/iammikek/react-101) | Web browser | React 19, Vite, Vitest |
+| [vue-101](https://github.com/iammikek/vue-101) | Web browser | Vue 3, Vite, Pinia |
+
+### Suggested pairing
+
+- **Compare Python stacks:** [fastAPI-101](https://github.com/iammikek/fastAPI-101) (8000) vs django-101 (8001)
+- **Monolith shop vs SPA:** django-101 `/shop/` vs [react-101](https://github.com/iammikek/react-101) or [vue-101](https://github.com/iammikek/vue-101)
+
+Catalogue: [automica.io/learning-101](https://automica.io/learning-101.html)
