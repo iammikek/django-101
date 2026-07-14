@@ -479,6 +479,7 @@ You now have the **same API** implemented twice — once FastAPI (async-capable,
 | [fortran-101](https://github.com/iammikek/fortran-101) | 8008 | API-only | Fortran, fpm |
 | [java-101](https://github.com/iammikek/java-101) | 8009 | API-only | Spring Boot, JPA, Flyway |
 | [dotNet-101](https://github.com/iammikek/dotNet-101) | 8010 | API-only | ASP.NET Core, xUnit |
+| [flask-101](https://github.com/iammikek/flask-101) | 8011 | API-only | Flask, pytest |
 \* go-101 also uses port 8000 — run one backend at a time, or change port in config.
 
 ### Other clients
@@ -488,10 +489,11 @@ You now have the **same API** implemented twice — once FastAPI (async-capable,
 | [flutter-101](https://github.com/iammikek/flutter-101) | Mobile / desktop | Flutter (iOS, macOS, Android) |
 | [react-101](https://github.com/iammikek/react-101) | Web browser | React 19, Vite, Vitest |
 | [vue-101](https://github.com/iammikek/vue-101) | Web browser | Vue 3, Vite, Pinia |
+| [alpine-101](https://github.com/iammikek/alpine-101) | Web browser | Alpine.js, Vite, Vitest |
 
 ### Suggested pairing
 
-- **Compare Python stacks:** [fastAPI-101](https://github.com/iammikek/fastAPI-101) (8000) vs django-101 (8001)
-- **Monolith shop vs SPA:** django-101 `/shop/` vs [react-101](https://github.com/iammikek/react-101) or [vue-101](https://github.com/iammikek/vue-101)
+- **Compare Python stacks:** [fastAPI-101](https://github.com/iammikek/fastAPI-101) (8000) vs django-101 (8001) vs [flask-101](https://github.com/iammikek/flask-101) (8011)
+- **Monolith shop vs SPA:** django-101 `/shop/` vs [react-101](https://github.com/iammikek/react-101), [vue-101](https://github.com/iammikek/vue-101), or [alpine-101](https://github.com/iammikek/alpine-101)
 
 Catalogue: [automica.io/learning-101](https://automica.io/learning-101.html)
